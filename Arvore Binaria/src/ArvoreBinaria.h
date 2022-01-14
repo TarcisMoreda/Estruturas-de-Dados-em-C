@@ -4,12 +4,14 @@
 #ifndef ARVORE_BINARIA
 #define ARVORE_BINARIA
 
-typedef struct{
+//Struct que define o nó da árvore.
+typedef struct noArvore{
     int num;
     struct noArvore* esquerda;
     struct noArvore* direita;
 } noArvore;
 
+//Prototipação das funções da árvore.
 noArvore* arvoreCria(int elem);
 int arvoreInsere(noArvore* ar, int elem);
 int arvoreRemove(noArvore* ar, int elem);
