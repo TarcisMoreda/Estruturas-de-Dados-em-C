@@ -56,7 +56,7 @@ void arvoreInsereAux(noArvore* ar, noArvore* novo){
         if (ar->esquerda != NULL) arvoreInsereAux(ar->esquerda, novo);
         else ar->esquerda = novo;
     }
-    else{
+    else if (novo->num > ar->num){
         if (ar->direita != NULL) arvoreInsereAux(ar->direita, novo);
         else ar->direita = novo;
     }
@@ -65,71 +65,61 @@ void arvoreInsereAux(noArvore* ar, noArvore* novo){
 }
 
 /*
-Checa se a árvore existe
-Um ponteiro de nó(atual) é criado
-Um ponteiro de nó(anterior) é criado
-Um loop é criado até chegar no nó desejado
-    O anterior referencia o atual
-    O atual referencia o próximo nó dependendo do valor elem
-Checa se o nó da direita do atual não existe
-    Checa de que lado o nó atual está em relacão ao anterior
-        O nó anterior deixa de referenciar o atual e passa a referenciar o nó da esquerda do atual
-    Libera-se a memória do ponteiro atual
-Um ponteiro de nó(aux) é criado
-Um ponteiro de nó(auxAnt) é criado
-O aux passa a referenciar o nó da direita do atual
-Um loop é criado até o aux referenciar o nó mais da esquerda
-Checa se o nó da direita do aux existe
-    Se sim o nó da esquerda do auxAnt passa a referenciar o nó da direita do aux
-    Se não o nó da esquerda do auxAnt é nulo
-Checa de que lado o nó atual está em relacão ao anterior
-    O nó anterior deixa de referenciar o atual e passa a referenciar o nó aux
-Os lados do nó aux passam a referenciar os mesmos do atual
-Libera-se a memória do ponteiro atual
+Eu odeio essa funcao, ela me deu tanta dor de cabeca.
+Mas o problema não era ela, o problema era a funcao de inserir.
 */
 int arvoreRemove(noArvore* ar, int elem){
     if (ar == NULL) return 0;
 
-    noArvore* atual = ar;
-    noArvore* anterior = NULL;
+    noArvore* raiz = ar;
+    noArvore* aux = ar;
 
-    while (atual->num != elem){
-        anterior = atual;
-        
-        if (elem < atual->num)atual = atual->esquerda;
-        else atual = atual->direita;
+    while (ar->num != elem){
+        aux = ar;
 
-        if (atual == NULL) return 0;
+        if (elem < ar->num){
+            if (ar->esquerda == NULL) return 0;
+            ar = ar->esquerda;
+        }
+        else if (elem > ar->num){
+            if (ar->direita == NULL) return 0;
+            ar = ar->direita;
+        }
     }
 
-    if (atual->direita == NULL){
-        if (anterior->esquerda == atual) anterior->esquerda = atual->esquerda;
-        else if (anterior->direita == atual) anterior->direita = atual->esquerda;
-        free(atual);
+    if (ar->esquerda == NULL && ar->direita == NULL){
+        if (aux->esquerda == ar) aux->esquerda = NULL;
+        else if (aux->direita == ar) aux->direita = NULL;
+        else return 0;
+
+        free(ar);
+
+        return 1;
+    }
+    else if (ar->esquerda != NULL && ar->direita != NULL){
+        aux = ar->direita;
+
+        while (aux->esquerda != NULL)
+        aux = aux->esquerda;
+
+        int valor = aux->num;
+        arvoreRemove(raiz, aux->num);
+        ar->num = valor;
 
         return 1;
     }
 
-    noArvore* aux = NULL;
-    noArvore* auxAnt = NULL;
-
-    auxAnt = atual;
-    aux = atual->direita;
-
-    while (aux->esquerda != NULL){
-        auxAnt = aux;
-        aux = aux->esquerda;
+    noArvore* filho = (ar->esquerda != NULL) ? ar->esquerda: ar->direita;
+        
+    if (ar != raiz){
+        if (aux->esquerda == ar)
+        aux->esquerda = filho;
+        else
+        aux->direita = filho;
     }
+    else raiz = filho;
 
-    if (aux->direita != NULL) auxAnt->esquerda = aux->direita;
-    else auxAnt->esquerda = NULL;
-
-    if (anterior->esquerda == atual) anterior->esquerda = aux;
-    else if (anterior->direita == atual) anterior->direita = aux;
-
-    aux->esquerda = atual->esquerda;
-    aux->direita = atual->direita;
-    free(atual);
+    free(ar);
 
     return 1;
 }
