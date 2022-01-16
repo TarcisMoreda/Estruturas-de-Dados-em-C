@@ -1,3 +1,5 @@
 .vscode
 */build/testes
 */build/obj/*
+*/*/build/testes
+*/*/build/obj/*
