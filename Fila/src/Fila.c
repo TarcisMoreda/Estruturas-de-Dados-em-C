@@ -81,13 +81,8 @@ Um loop é feito enquanto a fila não estiver vazia
 int filaLimpa(fila* fi){
    if (fi == NULL || fi->inicio == NULL) return 0;
 
-   elemento* aux = fi->inicio;
-   elemento* aux2 = NULL;
-
-   while (fi != NULL){
-      aux2 = aux->prox;
-      free(aux);
-      aux = aux2;
+   while (fi->inicio != NULL){
+      filaRemove(fi);
       --(fi->tamanho);
    }
 

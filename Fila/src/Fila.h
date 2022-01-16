@@ -2,13 +2,13 @@
 #define FILA_H
 
 //Struct que define os dados da fila. 
-typedef struct{
+typedef struct dados{
    char* nome;
    int idade;
 } dados;
 
 //Struct que define um elemento.
-typedef struct{
+typedef struct elemento{
    dados dado;
    struct elemento* prox;
 } elemento;

@@ -9,18 +9,17 @@ Define os valores iniciais das pontas da pilha
 Retorna o ponteiro para a pilha criada
 */
 pilha* pilhaCria(){
-   pilha* fi = (pilha*) malloc(sizeof(pilha));
+   pilha* pi = (pilha*) malloc(sizeof(pilha));
 
-   if (fi == NULL){
+   if (pi == NULL){
       printf("Erro ao criar pilha.\n");
       return NULL;
    }
 
-   fi->inicio = NULL;
-   fi->fim = NULL;
-   fi->tamanho = 0;
+   pi->inicio = NULL;
+   pi->tamanho = 0;
 
-   return fi;
+   return pi;
 }
 
 /*
@@ -30,21 +29,19 @@ Um ponteiro de elemento(novo) é criado
 Os dados a serem adicionados são salvos no ponteiro novo
 Os elementos de aux depois do primeiro referenciam a pilha original
 O primeiro elemento de aux é declarado como o dado novo
-A fila passa a referenciar o mesmo ponto que aux.
+A pilha passa a referenciar o mesmo ponto que aux.
 A contagem do tamanho da pilha é aumentada
 */
-int pilhaInsere(pilha *fi, dados dado){
-   if (fi == NULL) return 0;
+int pilhaInsere(pilha *pi, dados dado){
+   if (pi == NULL) return 0;
 
-   pilha* aux = (pilha*) malloc(sizeof(pilha));
    elemento* novo = (elemento*) malloc(sizeof(elemento));
    novo->dado = dado;
-   
-   aux->inicio->prox = fi->inicio;
-   aux->inicio = novo;
-   fi = aux;
 
-   ++(fi->tamanho);
+   novo->prox = pi->inicio;
+   pi->inicio = novo;
+
+   ++(pi->tamanho);
    return 1;
 }
 
@@ -56,16 +53,14 @@ Se o novo elemento inicial da pilha for nulo o fim também é nulo
 Libera-se a memória do ponteiro aux
 Diminui a contagem do tamanho da pilha
 */
-int pilhaRemove(pilha *fi){
-   if (fi == NULL || fi->inicio == NULL) return 0;
+int pilhaRemove(pilha *pi){
+   if (pi == NULL || pi->inicio == NULL) return 0;
 
-   elemento* aux = fi->inicio;
-	fi->inicio = fi->inicio->prox;
-
-   if (fi->inicio == NULL) fi->fim = NULL;
+   elemento* aux = pi->inicio;
+	pi->inicio = pi->inicio->prox;
 
    free(aux);
-   --(fi->tamanho);
+   --(pi->tamanho);
    return 1;
 }
 
@@ -79,17 +74,12 @@ Um loop é feito enquanto a pilha não estiver vazia
    O ponteiro aux passa a referenciar o mesmo elemento do ponteiro aux2
    Diminui a contagem do tamanho da pilha
 */
-int pilhaLimpa(pilha* fi){
-   if (fi == NULL || fi->inicio == NULL) return 0;
+int pilhaLimpa(pilha* pi){
+   if (pi == NULL || pi->inicio == NULL) return 0;
 
-   elemento* aux = fi->inicio;
-   elemento* aux2 = NULL;
-
-   while (fi != NULL){
-      aux2 = aux->prox;
-      free(aux);
-      aux = aux2;
-      --(fi->tamanho);
+   while (pi->inicio != NULL){
+      pilhaRemove(pi);
+      --(pi->tamanho);
    }
 
    return 1;
@@ -100,11 +90,11 @@ Checa se a pilha existe
 A função pilhaLimpa() limpa todos os dados da pilha
 Libera-se a memória da pilha
 */
-void pilhaDestroi(pilha* fi){
-   if (fi == NULL) return;
+void pilhaDestroi(pilha* pi){
+   if (pi == NULL) return;
 
-   pilhaLimpa(fi);
-   free(fi);
+   pilhaLimpa(pi);
+   free(pi);
 
    return;
 }
